@@ -2,7 +2,13 @@
 #ifndef CLASSES_HPP
 #define CLASSES_HPP
 
-extern const double pi = 3.141592653589793;
+
+
+// configurations for chassis
+
+enum ChassisConfig{
+    FULL
+};
 
 class Chassis {
     public:
@@ -32,7 +38,7 @@ class Chassis {
         void setPose(double x, double y, double theta);
 
         Point getPosition();
-
+        
         void odomUpdate();
 
         // motion functions (PID)
@@ -51,17 +57,21 @@ class Chassis {
         pros::MotorGroup& leftMotorGroup;
         // inertial + tracking wheels
         pros::Imu& inertial;
-        std::optional<TrackingWheel&> verticalWheel;
-        std::optional<TrackingWheel&> horizontalWheel;
+        TrackingWheel& verticalWheel;
+        TrackingWheel& horizontalWheel;
         
         // tracking widths
         float horizontalTracking;
-        std::optional<float> verticalTracking;
+        float verticalTracking;
 
     // not defined by user
         
-    // odometry 
+        // odometry 
+
+        ChassisConfig config;
         Point position;
+        double previousVertTracker;
+        double previousHorizTracker;
 
 
 };
@@ -71,6 +81,7 @@ class TrackingWheel {
     TrackingWheel(pros::Rotation& rotationSensor, float wheelDiameter);
 
     double getTotalDistanceTravelled();
+    void reverse();
 
     private:
     pros::Rotation& rotationSensor;
@@ -102,8 +113,8 @@ class Point {
     double x = 0;
     double y = 0;
     double theta = 0;
-    std::optional<double> linvel = 0;
-    std::optional<double> angvel = 0;
+    double linvel = 0;
+    double angvel = 0;
 
     
     

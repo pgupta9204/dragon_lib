@@ -75,8 +75,12 @@ inertial(inertial),
 verticalTracking(verticalTracking), 
 
 // initializes horizontal tracking width (required)
-horizontalTracking(horizontalTracking)
+horizontalTracking(horizontalTracking),
 
+previousHorizTracker(0), 
+previousVertTracker(0),
+
+config(FULL)
 
 {}
 

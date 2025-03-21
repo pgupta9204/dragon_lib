@@ -7,3 +7,7 @@ double TrackingWheel::getTotalDistanceTravelled() {
     double revolutions = this->rotationSensor.get_position() / 36000;
     return revolutions * M_PI * this->wheelDiameter;
 }
+
+void TrackingWheel::reverse() {
+    this->rotationSensor.reverse();
+}

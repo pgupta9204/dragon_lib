@@ -6,8 +6,8 @@ pros::MotorGroup rightMotors({4, 5, 6});
 pros::Rotation vertical(7);
 pros::Rotation horiz(8);
 
-TrackingWheel verticalWheel(vertical, 2);
-TrackingWheel horizontalWheel(horiz, 2);
+TrackingWheel vertWheel(vertical, 2);
+TrackingWheel horizWheel(horiz, 2);
 
 
 
