@@ -84,10 +84,11 @@ config(FULL)
 
 {}
 
+/*
+PID Constructors
+*/
 
-
-
-
+PIDController::PIDController(double kP, double kI, double kD) : kP(kP), kI(kI), kD(kD) {}
 
 
 

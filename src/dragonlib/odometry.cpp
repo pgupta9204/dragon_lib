@@ -20,9 +20,6 @@ void Chassis::odomUpdate() {
     double inertial_in_radians = this->inertial.get_heading() * M_PI / 180;
     
     double delta_theta = -position.theta + this->inertial.get_heading();
-    
-
-
     // normalizes delta theta between -180 deg and 180 deg
 
     if(delta_theta < -180){

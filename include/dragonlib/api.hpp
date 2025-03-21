@@ -91,6 +91,20 @@ class TrackingWheel {
 
 class PIDController {
     public: 
+        PIDController(double kP, double kI, double kD);
+
+        double PIDUpdate(double error, int milli);
+        
+        void resetParams(double kP, double kI, double kD);
+
+        void reset();
+
+    private:
+        double kP;
+        double kI;
+        double kD;
+        double prevError;
+        double integral;
 };
 
 class Point {
@@ -123,3 +137,7 @@ class Point {
 };
 
 #endif
+
+
+
+// Coded by Team 9204A Dragons
