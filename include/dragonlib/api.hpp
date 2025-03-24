@@ -6,16 +6,16 @@
 
 // configurations for chassis
 
-enum ChassisConfig{
-    FULL
-};
+
 
 class Chassis {
     public:
-        // constructor
+        // full constructor
         Chassis(
             pros::MotorGroup& l, 
             pros::MotorGroup& r, 
+            PIDController& angularController,
+            PIDController& linearController,
             TrackingWheel& vertical, 
             TrackingWheel& horizontal, 
             pros::Imu& inertial,
@@ -23,7 +23,16 @@ class Chassis {
             float horizontalTracking
         
         );        
-
+        
+        Chassis(
+            pros::MotorGroup& l, 
+            pros::MotorGroup& r, 
+            PIDController& angularController,
+            PIDController& linearController, 
+            pros::Imu& inertial,
+            float verticalTracking, 
+            float horizontalTracking
+        );
 
         // destructor (probably not going to be used)
         ~Chassis();
@@ -39,9 +48,13 @@ class Chassis {
 
         Point getPosition();
         
+        
+
         void odomUpdate();
 
         // motion functions (PID)
+
+        void moveToPoint(double x, double y, double cutoff);
 
         // 2DMP
         
@@ -55,6 +68,11 @@ class Chassis {
         // motors
         pros::MotorGroup& rightMotorGroup;
         pros::MotorGroup& leftMotorGroup;
+
+        // PID Controllers
+        PIDController& angularController;
+        PIDController& linearController;
+
         // inertial + tracking wheels
         pros::Imu& inertial;
         TrackingWheel& verticalWheel;
@@ -64,11 +82,15 @@ class Chassis {
         float horizontalTracking;
         float verticalTracking;
 
+        // gear ratio
+
+        float gearRatio;
+
     // not defined by user
         
         // odometry 
 
-        ChassisConfig config;
+        float config;
         Point position;
         double previousVertTracker;
         double previousHorizTracker;
@@ -135,6 +157,12 @@ class Point {
     
 
 };
+
+
+
+extern TrackingWheel empty_tracker;
+
+
 
 #endif
 

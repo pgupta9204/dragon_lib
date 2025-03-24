@@ -15,6 +15,8 @@ void Chassis::setPose(double x, double y, double theta){
 
 void Chassis::odomUpdate() {
 
+    
+
     // determines change in theta
 
     double inertial_in_radians = this->inertial.get_heading() * M_PI / 180;
@@ -46,7 +48,7 @@ void Chassis::odomUpdate() {
     double local_delta_x;
 
 
-    if(delta_theta = 0){
+    if(delta_theta == 0){
         local_delta_y = delta_vert_tracker;
         local_delta_x = delta_horiz_tracker;
     } else {
@@ -70,6 +72,6 @@ void Chassis::odomUpdate() {
 
     this->position.x += global_delta_x;
     this->position.y += global_delta_y;
-    this->position.theta = inertial.get_heading();
+    this->position.theta = this->inertial.get_heading();
 
 }

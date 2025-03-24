@@ -51,6 +51,8 @@ Chassis Constructors
 Chassis::Chassis(
     pros::MotorGroup& l, 
     pros::MotorGroup& r, 
+    PIDController& angularController,
+    PIDController& linearController,
     TrackingWheel& vertical, 
     TrackingWheel& horizontal, 
     pros::Imu& inertial,
@@ -61,28 +63,81 @@ Chassis::Chassis(
 ) : 
 
 // initializes motor groups
+
 leftMotorGroup(l), 
 rightMotorGroup(r), 
 
+// initializes PID Controllers
+
+angularController(angularController),
+linearController(linearController),
+
 // initializes tracking wheels (optional)
+
 verticalWheel(vertical), 
 horizontalWheel(horizontal), 
 
 // initializes inertial sensor
+
 inertial(inertial), 
 
 // initalizes vertical tracking width (optional)
+
 verticalTracking(verticalTracking), 
 
 // initializes horizontal tracking width (required)
+
 horizontalTracking(horizontalTracking),
 
 previousHorizTracker(0), 
-previousVertTracker(0),
-
-config(FULL)
+previousVertTracker(0)
 
 {}
+
+// constructor with just imu
+
+Chassis::Chassis(
+    pros::MotorGroup& l, 
+    pros::MotorGroup& r, 
+    PIDController& angularController,
+    PIDController& linearController, 
+    pros::Imu& inertial,
+    float verticalTracking, 
+    float horizontalTracking
+) : 
+
+// initializes motor groups
+
+leftMotorGroup(l), 
+rightMotorGroup(r), 
+
+// initializes PID Controllers
+
+angularController(angularController),
+linearController(linearController),
+
+// initializes tracking wheels as empty wheels
+
+verticalWheel(empty_tracker), 
+horizontalWheel(empty_tracker), 
+
+// initializes inertial sensor
+
+inertial(inertial), 
+
+// initalizes vertical tracking width (optional)
+
+verticalTracking(verticalTracking), 
+
+// initializes horizontal tracking width (required)
+
+horizontalTracking(horizontalTracking),
+
+previousHorizTracker(0), 
+previousVertTracker(0)
+
+{}
+
 
 /*
 PID Constructors
