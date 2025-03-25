@@ -54,7 +54,7 @@ class Chassis {
 
         // motion functions (PID)
 
-        void moveToPoint(double x, double y, double cutoff);
+        void moveToPoint(double x, double y, double cutoff, double maxSpeed, double minSpeed, bool reverse);
 
         // 2DMP
         
@@ -146,6 +146,8 @@ class Point {
 
     double getDistance(Point& other);
     double getAngularError(Point& other);
+    double getDirectionTo(Point& other);
+    
     double x = 0;
     double y = 0;
     double theta = 0;
@@ -162,6 +164,9 @@ class Point {
 
 extern TrackingWheel empty_tracker;
 
+extern double degreesToRadians(double degrees);
+
+extern double radiansToDegrees(double radians);
 
 
 #endif
