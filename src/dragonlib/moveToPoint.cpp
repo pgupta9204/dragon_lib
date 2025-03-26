@@ -9,6 +9,8 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
 
     Point target(x, y, 0 /* figure out this value thru atan2 or something */);
 
+    double tolerance = 1;
+
     double timer = 0;
 
     // reset integral and derivative values at the beginning of iterations
@@ -20,6 +22,11 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
     if(!reverse){
         while(timer < cutoff){
             linearError = this->position.getDistance(target);
+
+            if(linearError < tolerance){
+                break;
+            }
+
             angularError = this->position.getDirectionTo(target)-this->inertial.get_heading();
 
             if(angularError > 180) {
@@ -67,6 +74,11 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
     } else {
         while(timer < cutoff){
             linearError = this->position.getDistance(target);
+            
+            if(linearError < tolerance){
+                break;
+            }
+
             angularError = this->position.getDirectionTo(target)-(this->inertial.get_heading()-180);
 
             if(angularError > 180) {
