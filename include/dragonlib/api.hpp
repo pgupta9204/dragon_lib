@@ -116,7 +116,7 @@ class Chassis {
 
         void turnToHeading(double theta, double cutoff, double maxSpeed, double minSpeed);
 
-        void moveToPoint(double x, double y, double cutoff, double maxSpeed, double minSpeed, bool reverse);
+        void moveToPoint(double x, double y, double cutoff, double maxSpeed, double minSpeed, bool reverse, double tolerance);
 
         // 2DMP
         

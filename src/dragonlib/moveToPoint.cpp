@@ -4,12 +4,12 @@
 
 
 
-void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, double minSpeed, bool reverse) {
+void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, double minSpeed, bool reverse, double tolerance) {
 
 
     Point target(x, y, 0 /* figure out this value thru atan2 or something */);
 
-    double tolerance = 1;
+    
 
     double timer = 0;
 
@@ -21,13 +21,19 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
     double angularError;
     if(!reverse){
         while(timer < cutoff){
+            timer += 10;
+
             linearError = this->position.getDistance(target);
 
             if(linearError < tolerance){
                 break;
             }
 
+            // determine angular error
+
             angularError = this->position.getDirectionTo(target)-this->inertial.get_heading();
+
+            // keep angular error within -180 and 180
 
             if(angularError > 180) {
                 angularError -= 360;
@@ -37,24 +43,46 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
     
             // determine whether the point is behind, in which case moving backwards is optimal
     
-            if(abs(angularError) > 90){
+            if(fabs(angularError) > 90){
                 angularError = remainder(angularError-180, 360);
                 linearError *= -1;
             }
+            
+            double throttle = this->linearController.PIDUpdate(linearError, 10);    // throttle should have a value from -12 to 12
+
+
+            double turn = this->angularController.PIDUpdate(angularError, 10);      // turn should have a value from -12 to 12
     
-            double throttle = this->linearController.PIDUpdate(linearError, 10);
-            double turn = this->angularController.PIDUpdate(angularError, 10);
-    
+            // make throttle conform to minspeed and maxspeed
+
+            if(throttle > 0){
+                if(throttle > 12 * maxSpeed){
+                    throttle = 12 * maxSpeed;
+                } else if (throttle < 12 * minSpeed){
+                    throttle = 12 * minSpeed;
+                }
+            } else if (throttle < 0) {
+                if(throttle < -12 * maxSpeed){
+                    throttle = -12 * maxSpeed;
+                } else if (throttle > -12 * minSpeed){
+                    throttle = -12 * minSpeed;
+                }
+            }
+
             // bias towards turning
     
             throttle *= cos(degreesToRadians(angularError));
-    
+
+
+
             // convert throttle and turn into left and right motorspots
     
             double leftVoltage = throttle + turn;
             double rightVoltage = throttle - turn;
     
-    
+            
+
+
             // normalize values so we don't oversaturate and not follow the path
     
             if(leftVoltage > 12){
@@ -64,22 +92,32 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
                 rightVoltage = 12;
                 leftVoltage *= 12/rightVoltage;
             }
+
+            
+
+            
     
             this->leftMotorGroup.move_voltage(leftVoltage*1000);
             this->rightMotorGroup.move_voltage(rightVoltage*1000);
     
-            timer += 10;
+            
             pros::delay(10);
         }
     } else {
         while(timer < cutoff){
+            timer += 10;
+
             linearError = this->position.getDistance(target);
-            
+
             if(linearError < tolerance){
                 break;
             }
 
-            angularError = this->position.getDirectionTo(target)-(this->inertial.get_heading()-180);
+            // determine angular error
+
+            angularError = this->position.getDirectionTo(target)-this->inertial.get_heading()-180;
+
+            // keep angular error within -180 and 180
 
             if(angularError > 180) {
                 angularError -= 360;
@@ -89,24 +127,46 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
     
             // determine whether the point is behind, in which case moving backwards is optimal
     
-            if(abs(angularError) > 90){
+            if(fabs(angularError) > 90){
                 angularError = remainder(angularError-180, 360);
                 linearError *= -1;
             }
+            
+            double throttle = this->linearController.PIDUpdate(linearError, 10);    // throttle should have a value from -12 to 12
+
+
+            double turn = this->angularController.PIDUpdate(angularError, 10);      // turn should have a value from -12 to 12
     
-            double throttle = this->linearController.PIDUpdate(linearError, 10);
-            double turn = this->angularController.PIDUpdate(angularError, 10);
-    
+            // make throttle conform to minspeed and maxspeed
+
+            if(throttle > 0){
+                if(throttle > 12 * maxSpeed){
+                    throttle = 12 * maxSpeed;
+                } else if (throttle < 12 * minSpeed){
+                    throttle = 12 * minSpeed;
+                }
+            } else if (throttle < 0) {
+                if(throttle < -12 * maxSpeed){
+                    throttle = -12 * maxSpeed;
+                } else if (throttle > -12 * minSpeed){
+                    throttle = -12 * minSpeed;
+                }
+            }
+
             // bias towards turning
     
             throttle *= cos(degreesToRadians(angularError));
-    
+
+
+
             // convert throttle and turn into left and right motorspots
     
             double leftVoltage = throttle + turn;
             double rightVoltage = throttle - turn;
     
-    
+            
+
+
             // normalize values so we don't oversaturate and not follow the path
     
             if(leftVoltage > 12){
@@ -116,11 +176,15 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
                 rightVoltage = 12;
                 leftVoltage *= 12/rightVoltage;
             }
+
+            
+
+            
     
             this->leftMotorGroup.move_voltage(-leftVoltage*1000);
             this->rightMotorGroup.move_voltage(-rightVoltage*1000);
     
-            timer += 10;
+            
             pros::delay(10);
         }
     }
