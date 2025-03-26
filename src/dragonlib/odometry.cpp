@@ -12,16 +12,14 @@ void Chassis::setPose(double x, double y, double theta){
     position.theta = theta;
 };
 
-
 void Chassis::odomUpdate() {
-
-    
 
     // determines change in theta
 
     double inertial_in_radians = this->inertial.get_heading() * M_PI / 180;
-    
+
     double delta_theta = -position.theta + this->inertial.get_heading();
+    
     // normalizes delta theta between -180 deg and 180 deg
 
     if(delta_theta < -180){
@@ -39,7 +37,6 @@ void Chassis::odomUpdate() {
     double delta_vert_tracker = this->verticalWheel.getTotalDistanceTravelled() - this->previousVertTracker;
     double delta_horiz_tracker = this->horizontalWheel.getTotalDistanceTravelled() - this->previousHorizTracker;
 
-
     // find local position
 
     double arc_radius;
@@ -47,19 +44,23 @@ void Chassis::odomUpdate() {
     double local_delta_y;
     double local_delta_x;
 
+    // figure out local movements
 
-    if(delta_theta == 0){
+    if(delta_theta == 0){       // if dtheta is zero, no arc has been made! just figure out how much you traveled vertically and horizontally
+        
         local_delta_y = delta_vert_tracker;
         local_delta_x = delta_horiz_tracker;
-    } else {
+
+    } else {                    // if dtheta is NOT zero, do arc calculations
+
         arc_radius = verticalTracking + delta_vert_tracker/delta_theta_in_radians;
         horiz_arc_radius = horizontalTracking + delta_horiz_tracker/delta_theta_in_radians;
         local_delta_y = sin(delta_theta_in_radians/2)*arc_radius;
         local_delta_x = sin(delta_theta_in_radians/2)*horiz_arc_radius;
+
     }
 
-    
-
+    // get transformation angle to change local to global coords
 
     double transformation_angle = inertial_in_radians + delta_theta_in_radians/2;
     
@@ -74,4 +75,9 @@ void Chassis::odomUpdate() {
     this->position.y += global_delta_y;
     this->position.theta = this->inertial.get_heading();
 
-}
+    // resets previous tracker for next cycle
+
+    this->previousVertTracker = this->verticalWheel.getTotalDistanceTravelled();
+    this->previousHorizTracker = this->horizontalWheel.getTotalDistanceTravelled();
+
+};

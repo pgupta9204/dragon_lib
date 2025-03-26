@@ -6,10 +6,11 @@
 
 void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, double minSpeed, bool reverse, double tolerance) {
 
+    // create point object to make calculations easier
 
-    Point target(x, y, 0 /* figure out this value thru atan2 or something */);
+    Point target(x, y, 0);
 
-    
+    target.theta = this->position.getDirectionTo(target);
 
     double timer = 0;
 
@@ -23,7 +24,11 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
         while(timer < cutoff){
             timer += 10;
 
+            // determine linear error - distance to the target
+
             linearError = this->position.getDistance(target);
+
+            // if linear error is lower than our tolerance then we are done with the movement and can exit the function
 
             if(linearError < tolerance){
                 break;
@@ -178,12 +183,13 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
             }
 
             
-
+            // finally move the motors
             
     
             this->leftMotorGroup.move_voltage(-leftVoltage*1000);
             this->rightMotorGroup.move_voltage(-rightVoltage*1000);
     
+            // add delay to not fry the brain :D
             
             pros::delay(10);
         }
