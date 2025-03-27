@@ -114,7 +114,7 @@ class Chassis {
 
         // motion functions (PID)
 
-        void turnToHeading(double theta, double cutoff, double maxSpeed, double minSpeed);
+        void turnToHeading(double theta, double cutoff, double maxSpeed, double minSpeed, double tolerance);
 
         void moveToPoint(double x, double y, double cutoff, double maxSpeed, double minSpeed, bool reverse, double tolerance);
 
