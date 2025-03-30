@@ -53,10 +53,10 @@ void Chassis::moveToPoint(double x, double y, double cutoff, double maxSpeed, do
                 linearError *= -1;
             }
             
-            double throttle = this->linearController.PIDUpdate(linearError, 10);    // throttle should have a value from -12 to 12
+            double throttle = this->linearController.PIDUpdate(linearError, 1);    // throttle should have a value from -12 to 12
 
 
-            double turn = this->angularController.PIDUpdate(angularError, 10);      // turn should have a value from -12 to 12
+            double turn = this->angularController.PIDUpdate(angularError, 1);      // turn should have a value from -12 to 12
     
             // make throttle conform to minspeed and maxspeed
 

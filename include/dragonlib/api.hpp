@@ -118,6 +118,8 @@ class Chassis {
 
         void moveToPoint(double x, double y, double cutoff, double maxSpeed, double minSpeed, bool reverse, double tolerance);
 
+        void boomerang(double x, double y, double theta, double dlead, double cutoff, double maxSpeed, double minSpeed, bool reverse, double linearTolerance, double angularTolerance);
+
         // 2DMP
         
         
